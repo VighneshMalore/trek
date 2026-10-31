@@ -1,122 +1,156 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const CalculatorApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class CalculatorApp extends StatelessWidget {
+  const CalculatorApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: false,
+      title: 'Simple Calculator',
+      theme: ThemeData.dark(),
+      home: const CalculatorHomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class CalculatorHomePage extends StatefulWidget {
+  const CalculatorHomePage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<CalculatorHomePage> createState() => _CalculatorHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _CalculatorHomePageState extends State<CalculatorHomePage> {
+  String _display = '0';
+  double _num1 = 0;
+  double _num2 = 0;
+  String _operand = '';
+  String _output = '0';
 
-  void _incrementCounter() {
+  void _buttonPressed(String buttonText) {
+    if (buttonText == 'CLEAR') {
+      _output = '0';
+      _num1 = 0;
+      _num2 = 0;
+      _operand = '';
+    } else if (buttonText == '+' || buttonText == '-' || buttonText == '×' || buttonText == '÷') {
+      _num1 = double.parse(_display);
+      _operand = buttonText;
+      _output = '0';
+    } else if (buttonText == '=') {
+      _num2 = double.parse(_display);
+
+      if (_operand == '+') {
+        _output = (_num1 + _num2).toString();
+      }
+      if (_operand == '-') {
+        _output = (_num1 - _num2).toString();
+      }
+      if (_operand == '×') {
+        _output = (_num1 * _num2).toString();
+      }
+      if (_operand == '÷') {
+        _output = _num2 != 0 ? (_num1 / _num2).toString() : 'Error';
+      }
+
+      _num1 = 0;
+      _num2 = 0;
+      _operand = '';
+    } else {
+      if (_output == '0') {
+        _output = buttonText;
+      } else {
+        _output = _output + buttonText;
+      }
+    }
+
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      // Format output to remove trailing .0 for clean integers
+      if (_output != 'Error' && double.tryParse(_output) != null) {
+        double num = double.parse(_output);
+        if (num == num.toInt()) {
+          _display = num.toInt().toString();
+          return;
+        }
+      }
+      _display = _output;
     });
+  }
+
+  Widget _buildButton(String buttonText, Color buttonColor) {
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.all(8.0),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: buttonColor,
+            padding: const EdgeInsets.all(22.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+          ),
+          onPressed: () => _buttonPressed(buttonText),
+          child: Text(
+            buttonText,
+            style: const TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+      appBar: AppBar(title: const Text('Calculator')),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: Container(
+              alignment: Alignment.bottomRight,
+              padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 12.0),
+              child: Text(
+                _display,
+                style: const TextStyle(fontSize: 48.0, fontWeight: FontWeight.bold),
+              ),
             ),
-          ],
-        ),
+          ),
+          const Divider(height: 1),
+          Column(
+            children: [
+              Row(children: [
+                _buildButton('7', Colors.grey[800]!),
+                _buildButton('8', Colors.grey[800]!),
+                _buildButton('9', Colors.grey[800]!),
+                _buildButton('÷', Colors.orange),
+              ]),
+              Row(children: [
+                _buildButton('4', Colors.grey[800]!),
+                _buildButton('5', Colors.grey[800]!),
+                _buildButton('6', Colors.grey[800]!),
+                _buildButton('×', Colors.orange),
+              ]),
+              Row(children: [
+                _buildButton('1', Colors.grey[800]!),
+                _buildButton('2', Colors.grey[800]!),
+                _buildButton('3', Colors.grey[800]!),
+                _buildButton('-', Colors.orange),
+              ]),
+              Row(children: [
+                _buildButton('CLEAR', Colors.redAccent),
+                _buildButton('0', Colors.grey[800]!),
+                _buildButton('=', Colors.blueAccent),
+                _buildButton('+', Colors.orange),
+              ]),
+            ],
+          )
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
