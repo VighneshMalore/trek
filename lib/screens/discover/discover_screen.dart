@@ -4,6 +4,7 @@ import '../../core/theme/app_theme.dart';
 import '../../data/mock/trek_data.dart';
 import '../../models/trek.dart';
 import '../../widgets/trek_card.dart';
+import 'trek_details_screen.dart';
 
 /// Distance filter options based on trek length.
 enum DistanceFilter {
@@ -377,7 +378,17 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 for (final trek in results) ...[
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-                    child: TrekCard(trek: trek),
+                    child: TrekCard(
+                      trek: trek,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => TrekDetailsScreen(trek: trek),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.xl),
                 ],
