@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'core/theme/app_theme.dart';
 import 'screens/discover/discover_screen.dart';
 import 'screens/history/history_screen.dart';
 import 'screens/home/home_screen.dart';
@@ -16,10 +17,7 @@ class TrailMateApp extends StatelessWidget {
     return MaterialApp(
       title: 'TrailMate',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-      ),
+      theme: AppTheme.light,
       home: const MainNavigationShell(),
     );
   }
