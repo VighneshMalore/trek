@@ -12,6 +12,8 @@ const List<Trek> mockTreks = [
     duration: '1 Day',
     rating: 4.5,
     description: 'A popular historic hill fortress offering panoramic valley views and authentic local food.',
+    latitude: 18.37,
+    longitude: 73.76,
   ),
   Trek(
     id: 'visapur',
@@ -23,6 +25,8 @@ const List<Trek> mockTreks = [
     duration: '1 Day',
     rating: 4.5,
     description: 'Famous for its cascading waterfall staircase trail and expansive plateau ruins near Lonavala.',
+    latitude: 18.72,
+    longitude: 73.49,
   ),
   Trek(
     id: 'lohagad',
@@ -34,6 +38,8 @@ const List<Trek> mockTreks = [
     duration: '1 Day',
     rating: 4.7,
     description: 'An iconic fortified hill known for its iconic scorpion-tail ridge and well-preserved stone gateways.',
+    latitude: 18.71,
+    longitude: 73.48,
   ),
   Trek(
     id: 'rajgad',
@@ -45,6 +51,8 @@ const List<Trek> mockTreks = [
     duration: '1 Day',
     rating: 4.8,
     description: 'The majestic former capital of the Maratha Empire featuring towering bastions and scenic machis.',
+    latitude: 18.25,
+    longitude: 73.68,
   ),
   Trek(
     id: 'kalsubai',
@@ -56,6 +64,8 @@ const List<Trek> mockTreks = [
     duration: '1 Day',
     rating: 4.7,
     description: 'The highest peak in Maharashtra offering iron ladder climbs and sweeping cloud vistas.',
+    latitude: 19.60,
+    longitude: 73.71,
   ),
   Trek(
     id: 'torna',
@@ -67,6 +77,8 @@ const List<Trek> mockTreks = [
     duration: '1 Day',
     rating: 4.6,
     description: 'Known as the eagle nest fort with sprawling fortifications, steep ridges, and rugged hill terrain.',
+    latitude: 18.28,
+    longitude: 73.62,
   ),
   Trek(
     id: 'prabalgad',
@@ -78,6 +90,8 @@ const List<Trek> mockTreks = [
     duration: '1 Day',
     rating: 4.6,
     description: 'A rugged plateau summit facing Kalavantin Durg surrounded by dense forest paths and rocky ascents.',
+    latitude: 18.99,
+    longitude: 73.17,
   ),
   Trek(
     id: 'harishchandragad',
@@ -89,6 +103,7 @@ const List<Trek> mockTreks = [
     duration: '2 Days',
     rating: 4.8,
     description: 'An ancient hill fort renowned for the breathtaking Konkan Kada cliff overhang and historic caves.',
+    latitude: 19.39,
+    longitude: 73.77,
   ),
 ];
-

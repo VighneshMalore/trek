@@ -5,6 +5,7 @@ import '../../data/plan_store.dart';
 import '../../models/trek.dart';
 import '../../models/trek_plan.dart';
 import '../../widgets/trek_card.dart';
+import '../../widgets/weather_section.dart';
 import '../plan/trek_plan_screen.dart';
 import '../prepare/prepare_screen.dart';
 
@@ -178,6 +179,11 @@ class TrekDetailsScreen extends StatelessWidget {
                             color: AppColors.secondaryText,
                             height: 1.5,
                           ),
+                        ),
+                        const SizedBox(height: AppSpacing.xl),
+                        WeatherSection(
+                          latitude: trek.latitude,
+                          longitude: trek.longitude,
                         ),
                       ],
                     ),

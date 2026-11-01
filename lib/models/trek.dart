@@ -29,6 +29,8 @@ class Trek {
   final String duration;
   final double rating;
   final String description;
+  final double latitude;
+  final double longitude;
 
   const Trek({
     required this.id,
@@ -40,6 +42,7 @@ class Trek {
     required this.duration,
     required this.rating,
     required this.description,
+    required this.latitude,
+    required this.longitude,
   });
 }
-
