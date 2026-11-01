@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
+import '../../data/plan_store.dart';
 import '../../models/trek.dart';
+import '../../models/trek_plan.dart';
 import '../../widgets/trek_card.dart';
 import '../plan/trek_plan_screen.dart';
+import '../prepare/prepare_screen.dart';
 
 /// Screen displaying comprehensive details for a selected trek.
 class TrekDetailsScreen extends StatelessWidget {
@@ -202,33 +205,87 @@ class TrekDetailsScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              child: SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => TrekPlanScreen(trek: trek),
+              child: ValueListenableBuilder<List<TrekPlan>>(
+                valueListenable: savedPlans,
+                builder: (context, plans, _) {
+                  final matchingPlans =
+                      plans.where((p) => p.trek.id == trek.id).toList();
+                  final latestPlan =
+                      matchingPlans.isNotEmpty ? matchingPlans.last : null;
+
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => TrekPlanScreen(trek: trek),
+                              ),
+                            );
+                          },
+                          style: FilledButton.styleFrom(
+                            backgroundColor: AppColors.primaryGreen,
+                            foregroundColor: AppColors.surface,
+                            padding: const EdgeInsets.symmetric(
+                              vertical: AppSpacing.md,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(AppRadius.pill),
+                            ),
+                          ),
+                          child: const Text(
+                            'Plan This Trek',
+                            style: TextStyle(
+                              fontSize: AppTextSize.md,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
                       ),
-                    );
-                  },
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primaryGreen,
-                    foregroundColor: AppColors.surface,
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppRadius.pill),
-                    ),
-                  ),
-                  child: const Text(
-                    'Plan This Trek',
-                    style: TextStyle(
-                      fontSize: AppTextSize.md,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+                      if (latestPlan != null) ...[
+                        const SizedBox(height: AppSpacing.sm),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => PrepareScreen(plan: latestPlan),
+                                ),
+                              );
+                            },
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppColors.primaryGreen,
+                              side: const BorderSide(
+                                color: AppColors.primaryGreen,
+                                width: 1.5,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: AppSpacing.md,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(AppRadius.pill),
+                              ),
+                            ),
+                            child: const Text(
+                              'Prepare for Trek',
+                              style: TextStyle(
+                                fontSize: AppTextSize.md,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  );
+                },
               ),
             ),
           ),
