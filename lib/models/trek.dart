@@ -42,3 +42,4 @@ class Trek {
     required this.description,
   });
 }
+
