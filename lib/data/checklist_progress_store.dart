@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'mock/checklist_data.dart';
 
 /// In-memory store mapping trek ID to the set of completed checklist item IDs.
 final ValueNotifier<Map<String, Set<String>>> checklistProgress =
@@ -25,3 +26,15 @@ Set<String> completedIdsFor(String trekId) {
   return checklistProgress.value[trekId] ?? const <String>{};
 }
 
+/// Returns checklist completion percentage (0-100) for a trek.
+/// Mirrors PrepareScreen's calculation rule: total == 0 ? 0 : (completed / total * 100).round()
+int checklistProgressPercentFor(String trekId) {
+  final categories = checklistFor(trekId);
+  final totalItems = categories.fold<int>(
+    0,
+    (count, cat) => count + cat.items.length,
+  );
+  if (totalItems == 0) return 0;
+  final completedCount = completedIdsFor(trekId).length;
+  return (completedCount / totalItems * 100).round();
+}

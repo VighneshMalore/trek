@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/date_format.dart';
+import '../../data/checklist_progress_store.dart';
 import '../../data/plan_store.dart';
 import '../../models/trek.dart';
 import '../../models/trek_plan.dart';
@@ -137,7 +138,7 @@ class _TrekPlanScreenState extends State<TrekPlanScreen> {
               AppSpacing.xl,
               AppSpacing.xl,
               AppSpacing.xl,
-              110, // Generous padding so content never gets covered by pinned button
+              140, // Generous padding so content never gets covered by pinned button
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -416,93 +417,170 @@ class _TrekPlanScreenState extends State<TrekPlanScreen> {
                   ],
                 ),
 
-                // 5. Your Trek Plan (Summary card, only when all 3 selections made)
+                // 5. Your Plan & Before You Go (only when all 3 selections made)
                 if (hasAllSelections) ...[
                   const SizedBox(height: AppSpacing.xxl),
-                  Text(
-                    'Your Trek Plan',
-                    style: textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primaryText,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
+                  // "Your Plan" Card
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(AppSpacing.lg),
                     decoration: BoxDecoration(
                       color: AppColors.surface,
                       borderRadius: BorderRadius.circular(AppRadius.md),
-                      border: Border.all(
-                        color: AppColors.primaryGreen.withValues(alpha: 0.3),
-                      ),
+                      border: Border.all(color: AppColors.border),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primaryGreen.withValues(alpha: 0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 3),
+                          color: Colors.black.withValues(alpha: 0.03),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
                         ),
                       ],
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(
+                          'Your Plan',
+                          style: textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.primaryText,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Review your plan before saving.',
+                          style: textTheme.bodySmall?.copyWith(
+                            color: AppColors.secondaryText,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        const Divider(height: 1, color: AppColors.border),
+                        const SizedBox(height: AppSpacing.md),
+                        _PlanDetailRow(
+                          label: 'Trek',
+                          value: trek.name,
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        _PlanDetailRow(
+                          label: 'Location',
+                          value: trek.location,
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        _PlanDetailRow(
+                          label: 'Date',
+                          value: formatTrekDate(_selectedDate!),
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        _PlanDetailRow(
+                          label: 'Starting point',
+                          value: _selectedStartingPoint!,
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        _PlanDetailRow(
+                          label: 'Transport',
+                          value: _selectedTransport!.label,
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        const Divider(height: 1, color: AppColors.border),
+                        const SizedBox(height: AppSpacing.md),
+                        // Stats row (Difficulty | Distance | Est. duration)
                         Row(
                           children: [
-                            const Icon(
-                              Icons.check_circle_outline_rounded,
-                              size: 20,
-                              color: AppColors.primaryGreen,
-                            ),
-                            const SizedBox(width: AppSpacing.xs),
                             Expanded(
-                              child: Text(
-                                trek.name,
-                                style: textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.primaryText,
-                                ),
+                              child: _PlanStatItem(
+                                label: 'Difficulty',
+                                value: trek.difficulty.label,
+                              ),
+                            ),
+                            Container(
+                              height: 24,
+                              width: 1,
+                              color: AppColors.border,
+                            ),
+                            Expanded(
+                              child: _PlanStatItem(
+                                label: 'Distance',
+                                value: formattedDistance,
+                              ),
+                            ),
+                            Container(
+                              height: 24,
+                              width: 1,
+                              color: AppColors.border,
+                            ),
+                            Expanded(
+                              child: _PlanStatItem(
+                                label: 'Est. duration',
+                                value: trek.duration,
                               ),
                             ),
                           ],
                         ),
-                        const Divider(height: AppSpacing.xl, color: AppColors.border),
-                        _SummaryRow(
-                          label: 'Date',
-                          value: formatTrekDate(_selectedDate!),
-                          icon: Icons.calendar_today_outlined,
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        _SummaryRow(
-                          label: 'Starting from',
-                          value: _selectedStartingPoint!,
-                          icon: Icons.place_outlined,
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        _SummaryRow(
-                          label: 'Transport',
-                          value: _selectedTransport!.label,
-                          icon: switch (_selectedTransport!) {
-                            Transport.car => Icons.directions_car_outlined,
-                            Transport.bus => Icons.directions_bus_outlined,
-                            Transport.train => Icons.train_outlined,
-                            Transport.bike => Icons.two_wheeler_outlined,
-                          },
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        _SummaryRow(
-                          label: 'Distance',
-                          value: formattedDistance,
-                          icon: Icons.straighten_rounded,
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        _SummaryRow(
-                          label: 'Duration',
-                          value: trek.duration,
-                          icon: Icons.schedule_rounded,
-                        ),
                       ],
                     ),
+                  ),
+
+                  const SizedBox(height: AppSpacing.xxl),
+
+                  // "Before You Go" Section
+                  Text(
+                    'Before You Go',
+                    style: textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.primaryText,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  ValueListenableBuilder<Map<String, Set<String>>>(
+                    valueListenable: checklistProgress,
+                    builder: (context, _, __) {
+                      final prepPercent =
+                          checklistProgressPercentFor(trek.id);
+                      final prepStatus = prepPercent > 0
+                          ? '$prepPercent% complete'
+                          : 'Checklist available';
+
+                      return Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(AppSpacing.lg),
+                        decoration: BoxDecoration(
+                          color: AppColors.surface,
+                          borderRadius: BorderRadius.circular(AppRadius.md),
+                          border: Border.all(color: AppColors.border),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.03),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const _BeforeYouGoRow(
+                              label: 'Weather',
+                              status: 'Forecast on trek details',
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+                            const Divider(height: 1, color: AppColors.border),
+                            const SizedBox(height: AppSpacing.md),
+                            _BeforeYouGoRow(
+                              label: 'Preparation',
+                              status: prepStatus,
+                              isMutedGreen: prepPercent > 0,
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+                            const Divider(height: 1, color: AppColors.border),
+                            const SizedBox(height: AppSpacing.md),
+                            const _BeforeYouGoRow(
+                              label: 'Safety',
+                              status: 'Emergency numbers and tips available',
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                 ],
               ],
@@ -623,23 +701,20 @@ class _TransportCard extends StatelessWidget {
   }
 }
 
-class _SummaryRow extends StatelessWidget {
-  const _SummaryRow({
+class _PlanDetailRow extends StatelessWidget {
+  const _PlanDetailRow({
     required this.label,
     required this.value,
-    required this.icon,
   });
 
   final String label;
   final String value;
-  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 16, color: AppColors.secondaryText),
-        const SizedBox(width: AppSpacing.xs),
         Text(
           label,
           style: const TextStyle(
@@ -647,13 +722,100 @@ class _SummaryRow extends StatelessWidget {
             color: AppColors.secondaryText,
           ),
         ),
-        const Spacer(),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: Text(
+            value,
+            textAlign: TextAlign.end,
+            style: const TextStyle(
+              fontSize: AppTextSize.sm,
+              fontWeight: FontWeight.w600,
+              color: AppColors.primaryText,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PlanStatItem extends StatelessWidget {
+  const _PlanStatItem({
+    required this.label,
+    required this.value,
+  });
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
         Text(
           value,
           style: const TextStyle(
             fontSize: AppTextSize.sm,
+            fontWeight: FontWeight.w700,
+            color: AppColors.primaryText,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: AppTextSize.xs,
+            color: AppColors.secondaryText,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+}
+
+class _BeforeYouGoRow extends StatelessWidget {
+  const _BeforeYouGoRow({
+    required this.label,
+    required this.status,
+    this.isMutedGreen = false,
+  });
+
+  final String label;
+  final String status;
+  final bool isMutedGreen;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: AppTextSize.sm,
             fontWeight: FontWeight.w600,
             color: AppColors.primaryText,
+          ),
+        ),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: Text(
+            status,
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              fontSize: AppTextSize.sm,
+              fontWeight: FontWeight.w500,
+              color: isMutedGreen
+                  ? AppColors.primaryGreen
+                  : AppColors.secondaryText,
+            ),
           ),
         ),
       ],
