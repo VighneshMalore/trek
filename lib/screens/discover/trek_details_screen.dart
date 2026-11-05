@@ -6,6 +6,7 @@ import '../../models/trek.dart';
 import '../../models/trek_plan.dart';
 import '../../widgets/trek_card.dart';
 import '../../widgets/weather_section.dart';
+import '../navigate/trek_map_screen.dart';
 import '../plan/trek_plan_screen.dart';
 import '../prepare/prepare_screen.dart';
 
@@ -289,6 +290,42 @@ class TrekDetailsScreen extends StatelessWidget {
                           ),
                         ),
                       ],
+                      const SizedBox(height: AppSpacing.sm),
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => TrekMapScreen(trek: trek),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.map_outlined, size: 18),
+                          label: const Text(
+                            'View on Map',
+                            style: TextStyle(
+                              fontSize: AppTextSize.md,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.primaryGreen,
+                            side: const BorderSide(
+                              color: AppColors.primaryGreen,
+                              width: 1.5,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: AppSpacing.md,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(AppRadius.pill),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   );
                 },
