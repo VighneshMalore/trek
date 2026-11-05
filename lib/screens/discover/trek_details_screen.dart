@@ -9,6 +9,7 @@ import '../../widgets/weather_section.dart';
 import '../navigate/trek_map_screen.dart';
 import '../plan/trek_plan_screen.dart';
 import '../prepare/prepare_screen.dart';
+import '../safety/safety_screen.dart';
 
 /// Screen displaying comprehensive details for a selected trek.
 class TrekDetailsScreen extends StatelessWidget {
@@ -186,6 +187,8 @@ class TrekDetailsScreen extends StatelessWidget {
                           latitude: trek.latitude,
                           longitude: trek.longitude,
                         ),
+                        const SizedBox(height: AppSpacing.xl),
+                        _SafetyEntryCard(trek: trek),
                       ],
                     ),
                   ),
@@ -372,6 +375,83 @@ class _DetailStat extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _SafetyEntryCard extends StatelessWidget {
+  const _SafetyEntryCard({required this.trek});
+
+  final Trek trek;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Material(
+      color: AppColors.surface,
+      borderRadius: BorderRadius.circular(AppRadius.md),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => SafetyScreen(trek: trek),
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        child: Container(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryGreen.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                ),
+                child: const Icon(
+                  Icons.health_and_safety_outlined,
+                  size: 24,
+                  color: AppColors.primaryGreen,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Safety & Emergency',
+                      style: textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primaryText,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Emergency numbers and trek safety tips',
+                      style: textTheme.bodySmall?.copyWith(
+                        color: AppColors.secondaryText,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.secondaryText,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
