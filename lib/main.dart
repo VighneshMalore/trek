@@ -33,13 +33,6 @@ class MainNavigationShell extends StatefulWidget {
 class _MainNavigationShellState extends State<MainNavigationShell> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _screens = <Widget>[
-    HomeScreen(),
-    DiscoverScreen(),
-    PlanScreen(),
-    HistoryScreen(),
-  ];
-
   void _onDestinationSelected(int index) {
     setState(() {
       _selectedIndex = index;
@@ -48,10 +41,17 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
 
   @override
   Widget build(BuildContext context) {
+    final screens = <Widget>[
+      const HomeScreen(),
+      const DiscoverScreen(),
+      const PlanScreen(),
+      HistoryScreen(onExploreTreks: () => _onDestinationSelected(1)),
+    ];
+
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
-        children: _screens,
+        children: screens,
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,

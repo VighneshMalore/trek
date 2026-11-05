@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/utils/date_format.dart';
 import '../../data/plan_store.dart';
 import '../../models/trek.dart';
 import '../../models/trek_plan.dart';
@@ -28,25 +29,6 @@ class _TrekPlanScreenState extends State<TrekPlanScreen> {
     'Pune',
     'Other',
   ];
-
-  static const List<String> _months = <String>[
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-
-  String _formatDate(DateTime date) {
-    return '${date.day} ${_months[date.month - 1]} ${date.year}';
-  }
 
   Future<void> _pickDate() async {
     final now = DateTime.now();
@@ -111,7 +93,15 @@ class _TrekPlanScreenState extends State<TrekPlanScreen> {
       transport: _selectedTransport!,
     );
 
-    savedPlans.value = <TrekPlan>[...savedPlans.value, newPlan];
+    final saved = savePlan(newPlan);
+    if (!saved) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("You've already planned this trek for that date."),
+        ),
+      );
+      return;
+    }
 
     // 3. Feedback and navigate back
     ScaffoldMessenger.of(context).showSnackBar(
@@ -289,7 +279,7 @@ class _TrekPlanScreenState extends State<TrekPlanScreen> {
                           Expanded(
                             child: Text(
                               _selectedDate != null
-                                  ? _formatDate(_selectedDate!)
+                                  ? formatTrekDate(_selectedDate!)
                                   : 'Select Date',
                               style: TextStyle(
                                 fontSize: AppTextSize.md,
@@ -479,7 +469,7 @@ class _TrekPlanScreenState extends State<TrekPlanScreen> {
                         const Divider(height: AppSpacing.xl, color: AppColors.border),
                         _SummaryRow(
                           label: 'Date',
-                          value: _formatDate(_selectedDate!),
+                          value: formatTrekDate(_selectedDate!),
                           icon: Icons.calendar_today_outlined,
                         ),
                         const SizedBox(height: AppSpacing.sm),

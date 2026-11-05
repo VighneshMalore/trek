@@ -218,8 +218,11 @@ class TrekDetailsScreen extends StatelessWidget {
               child: ValueListenableBuilder<List<TrekPlan>>(
                 valueListenable: savedPlans,
                 builder: (context, plans, _) {
-                  final matchingPlans =
-                      plans.where((p) => p.trek.id == trek.id).toList();
+                  final matchingPlans = plans
+                      .where((p) =>
+                          p.trek.id == trek.id &&
+                          p.status == PlanStatus.planned)
+                      .toList();
                   final latestPlan =
                       matchingPlans.isNotEmpty ? matchingPlans.last : null;
 
